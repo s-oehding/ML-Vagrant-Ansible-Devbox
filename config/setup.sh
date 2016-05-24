@@ -1,32 +1,71 @@
 #!/bin/sh
 
-clear
+clear >&2
 
 # Get User input
 # --------------------
 
 #System Config
-echo $(yes % | head -n3)
-printf '\n%s\n'
-echo -e "Type in the IP for your VM, followed by [ENTER].\n- default:[$vm_ip]:" >&2
+echo "================================================================================\n" >&2
+echo "Type in the IP for your VM, followed by [ENTER].\n- default:[$2]\n" >&2
+echo "================================================================================\n" >&2
 read vm_ip
+if [ -z "$vm_ip"]
+then
+	vm_ip=$2
+fi
+clear >&2
 
-echo -e "Type in the Hostname for your VM, followed by [ENTER].\n- default:[$vm_hostname]:" >&2
+echo "================================================================================\n" >&2
+echo "Type in the Hostname for your VM, followed by [ENTER].\n- default:[$1]\n" >&2
+echo "================================================================================\n" >&2
 read vm_hostname
+if [ -z "$vm_hostname"]
+then
+	vm_hostname=$1
+fi
+clear >&2
 
-echo -e "Type in the URL for your VM, followed by [ENTER].\n- default:[$vm_url]:" >&2
+echo "================================================================================\n" >&2
+echo "Type in the URL for your VM, followed by [ENTER].\n- default:[$3]\n" >&2
+echo "================================================================================\n" >&2
 read vm_url
+if [ -z "$vm_url"]
+then
+	vm_url=$3
+fi
+clear >&2
 
 #Database Config
-echo -e "Type in the Database Name, followed by [ENTER].\n- default:[$vm_db_name]:" >&2
+echo "================================================================================\n" >&2
+echo "Type in the Database Name, followed by [ENTER].\n- default:[$4]\n" >&2
+echo "================================================================================\n" >&2
 read db_name
+if [ -z "$db_name"]
+then
+	db_name=$4
+fi
+clear >&2
 
-echo -e "Type in the Database Username, followed by [ENTER].\n- default:[$vm_db_user]:" >&2
+echo "================================================================================\n" >&2
+echo "Type in the Database Username, followed by [ENTER].\n- default:[$5]\n" >&2
+echo "================================================================================\n" >&2
 read db_user
+if [ -z "$db_user"]
+then
+	db_user=$5
+fi
+clear >&2
 
-echo -e "Type in the Database User password, followed by [ENTER].\n- default:[$vm_db_pw]:" >&2
+echo "================================================================================\n" >&2
+echo "Type in the Database User password, followed by [ENTER].\n- default:[$6]\n" >&2
+echo "================================================================================\n" >&2
 read db_pass
-
+if [ -z "$db_pass"]
+then
+	db_pass=$6
+fi
+clear >&2
 
 # Write out Vagrant Config
 # --------------------

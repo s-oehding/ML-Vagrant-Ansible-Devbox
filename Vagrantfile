@@ -1,14 +1,14 @@
 require 'yaml'
 
-# exec setup script on first run
-if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/*").empty?
-  `sh config/setup.sh`
-end
-
 # Load Variables form Configuration
 current_dir    = File.dirname(File.expand_path(__FILE__))
 configs        = YAML.load_file("#{current_dir}/config/config.yaml")
 vagrant_config = configs['configs'][configs['configs']['use']]
+
+# exec setup script on first run
+if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/*").empty?
+  `sh config/setup.sh #{vagrant_config['vm_name']} #{vagrant_config['vm_ip']} #{vagrant_config['vm_url']} #{vagrant_config['db_name']} #{vagrant_config['db_user']} #{vagrant_config['db_pass']}`
+end
 
 Vagrant.configure("2") do |config|
 

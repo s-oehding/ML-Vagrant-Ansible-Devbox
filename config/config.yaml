@@ -1,11 +1,11 @@
 ---
 configs:
-  use: 'asdf'
-  asdf:
-    vm_ip: 'asdf'
-    vm_hostname: 'asdf'
-    vm_url: 'asdf'
-    vm_name: 'asdf'
-    db_name: 'adsf'
-    db_user: 'asdf'
-    db_pass: 'asdf'
+  use: 'HOST'
+  HOST:
+    vm_ip: 'IP'
+    vm_hostname: 'HOST'
+    vm_url: 'URL'
+    vm_name: 'HOST'
+    db_name: 'DBName'
+    db_user: 'dbuser'
+    db_pass: 'dbpass'
