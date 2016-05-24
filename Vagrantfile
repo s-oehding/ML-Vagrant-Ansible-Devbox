@@ -6,7 +6,7 @@ configs        = YAML.load_file("#{current_dir}/config/config.yaml")
 vagrant_config = configs['configs'][configs['configs']['use']]
 
 # exec setup script on first run
-if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/*").empty?
+if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{vagrant_config['vm_name']}*").empty?
   `sh config/setup.sh #{vagrant_config['vm_name']} #{vagrant_config['vm_ip']} #{vagrant_config['vm_url']} #{vagrant_config['db_name']} #{vagrant_config['db_user']} #{vagrant_config['db_pass']}`
 end
 
@@ -65,7 +65,7 @@ Vagrant.configure("2") do |config|
 
     # Only exec on first provision
     # Install Ansible on Guest
-    if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/*").empty?
+    if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{vagrant_config['vm_name']}*").empty?
         config.vm.provision "shell" do |s|
             s.inline = "apt-add-repository ppa:ansible/ansible -y; apt-get update -y; apt-get install install software-properties-common -y; apt-get -y install ansible;"
             s.privileged = true
@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
 
     # Only exec on first provision
     # System Configuration 
-    if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/*").empty?
+    if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{vagrant_config['vm_name']}*").empty?
         config.vm.provision "shell" do |s|
             s.inline = "echo fs.inotify.max_user_watches=65535 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"
             s.privileged = true
