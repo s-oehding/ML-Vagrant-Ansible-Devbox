@@ -10,6 +10,20 @@ if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{vagrant_config['vm_na
   `sh config/setup.sh #{vagrant_config['vm_name']} #{vagrant_config['vm_ip']} #{vagrant_config['vm_url']} #{vagrant_config['db_name']} #{vagrant_config['db_user']} #{vagrant_config['db_pass']}`
 end
 
+# Check to determine whether we're on a windows or linux/os-x host,
+# later on we use this to launch ansible in the supported way
+# source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+def which(cmd)
+    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each { |ext|
+            exe = File.join(path, "#{cmd}#{ext}")
+            return exe if File.executable? exe
+        }
+    end
+    return nil
+end
+
 Vagrant.configure("2") do |config|
 
     config.vm.box = "ubuntu/trusty64"
@@ -63,33 +77,16 @@ Vagrant.configure("2") do |config|
 
     config.vm.synced_folder "./www", "/var/www", create: true
 
-    # Only exec on first provision
-    # Install Ansible on Guest
-    if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{vagrant_config['vm_name']}*").empty?
-        config.vm.provision "shell" do |s|
-            s.inline = "apt-add-repository ppa:ansible/ansible -y; apt-get update -y; apt-get install install software-properties-common -y; apt-get -y install ansible;"
-            s.privileged = true
+    # If ansible is in your path it will provision from your HOST machine
+    # If ansible is not found in the path it will be instaled in the VM and provisioned from there
+    if which('ansible-playbook')
+        config.vm.provision "ansible" do |ansible|
+            ansible.playbook = "./deployment/vagrant.yml"
+            ansible.sudo = true
+            ansible.limit = 'all'
         end
+    else
+        config.vm.provision :shell, path: "./deployment/windows.sh", args: ["default"]
     end
-
-    # Only exec on first provision
-    # System Configuration 
-    if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{vagrant_config['vm_name']}*").empty?
-        config.vm.provision "shell" do |s|
-            s.inline = "echo fs.inotify.max_user_watches=65535 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p"
-            s.privileged = true
-        end
-    end
-
-
-    config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "./deployment/vagrant.yml"
-    end
-
-    config.vm.provision "ansible_update", type: "ansible", run: "always" do |ansible|
-        ansible.playbook = "./deployment/vagrant.yml"
-        ansible.tags = "update"
-    end
-
 
 end

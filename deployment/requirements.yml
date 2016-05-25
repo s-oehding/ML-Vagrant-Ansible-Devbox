@@ -1,0 +1,21 @@
+#Apache
+- src: geerlingguy.apache
+
+#Mysql
+- src: geerlingguy.mysql
+
+#PHP 5.6
+- src: geerlingguy.php
+- src: geerlingguy.apache-php-fpm
+
+#Composer
+- src: geerlingguy.composer
+
+#NodeJs
+- src: geerlingguy.nodejs
+
+#PhpMyAdmin
+- src: geerlingguy.phpmyadmin
+
+#Mailhog
+- src: install geerlingguy.mailhog
