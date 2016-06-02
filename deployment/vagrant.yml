@@ -1,14 +1,216 @@
+---
 - hosts: all
+  strategy: debug
+  gather_facts: yes
+  user: vagrant
+  sudo: true
+  vars_files:
+    - ../config/config.yaml
   vars:
-    root_dir: "{{playbook_dir}}/../public/ansible_developer_recipes"
-    deploy_user: "{{ansible_user_id}}"
-
+    http_port: 80
+    hostname: "{{ configs.inventory_hostname.vm_hostname }}"
+    domain: "{{ configs.inventory_hostname.vm_url }}"
+    subdomain: "shopware"
 
   tasks:
-    - name: install requirements
-      local_action: command ansible-galaxy install -r requirements.yml --ignore-errors
+    - debug: var=vars
+    - debug: var=hostvars[inventory_hostname]
+
+  # - name: create site symlinks
+  #   file: src=/vagrant/www/html dest=/var/www/html state=link
+  #   file: src=/vagrant/www/shopware dest=/var/www/shopware state=link
+  #   notify: restart apache
+
+  # - name: install misc packages
+  #   apt: name={{ item }} state=latest
+  #   with_items:
+  #     - git-core
+  #     - curl
+  #     - unzip
+  #     - build-essential
+  #     - libsqlite3-dev
 
 
-  handlers:
-    - name: restart apache2
-      service: name=apache2 state=restarted
+  # - name: install language packs for locale support
+  #   apt: name={{ item }} state=latest
+  #   with_items:
+  #     - language-pack-de-base
+  #     - language-pack-es-base
+
+  # # memcached
+  # - name: ensure memcached is installed
+  #   apt: name=memcached state=latest
+
+  # # Apache2  
+  # - name: ensure apache is installed
+  #   apt: name=apache2 state=present
+
+  # - name: make sure apache is running
+  #   action: service name=apache2 state=started enabled=true
+
+  # - name: enabled mod_rewrite
+  #   apache2_module: name=rewrite state=present
+  #   notify:
+  #     - restart apache2
+
+  # - name: enabled mod_headers
+  #   apache2_module: name=headers state=present
+  #   notify:
+  #     - restart apache2
+
+  # - name: create default virtual host file
+  #   template: src=/vagrant/deployment/templates/vhosts/vhost.conf dest=/etc/apache2/sites-available/{{ domain }}.conf
+
+  # - name: create virtual host file
+  #   template: src=/vagrant/deployment/templates/vhosts/sub-vhost.conf dest=/etc/apache2/sites-available/{{ subdomain }}.conf
+
+  # - name: a2ensite {{ domain }}
+  #   command: a2ensite {{ domain }}
+  #   args:
+  #     creates: /etc/apache2/sites-enabled/{{ domain }}.conf
+  #   notify:
+  #     - restart apache2
+
+  # - name: a2ensite {{ subdomain }}
+  #   command: a2ensite {{ subdomain }}
+  #   args:
+  #     creates: /etc/apache2/sites-enabled/{{ subdomain }}.conf
+  #   notify:
+  #     - restart apache2
+
+  # - file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  #   notify: restart apache
+
+  # - file: path=/etc/apache2/conf.d state=directory
+
+  # - copy: src=/vagrant/deployment/templates/fqdn.conf dest=/etc/apache2/conf.d/fqdn.conf
+  #   notify: restart apache
+
+  # - copy: src=/vagrant/deployment/templates/nosendfile.conf dest=/etc/apache2/conf.d/nosendfile.conf
+  #   notify: restart apache
+
+  # # MySQL
+  # - name: install MySQL
+  #   apt: name={{ item }} state=latest
+  #   with_items:
+  #     - mysql-server
+  #     - mysql-client
+  #     - python-mysqldb
+
+  # - name: add mysql user
+  #   mysql_user: name=vagrant
+  #               host={{ item }}
+  #               password=vagrant priv=*.*:ALL,GRANT
+  #               login_user=root
+  #               login_password=root
+  #   with_items:
+  #     - '%'
+  #     - localhost
+
+  # - name: create mysql databases
+  #   mysql_db: name={{ item }}
+  #             state=present
+  #   with_items:
+  #     - "{{ dbname }}"
+
+  # # - file: path=/etc/mysql/conf.d state=directory
+  # # - name: Set MySQL number of connections
+  # #   copy: src=/vagrant/ansible/templates/max_connections.cnf dest=/etc/mysql/conf.d/max_connections.cnf
+  # #   notify: restart mysql
+  # # - name: Install mysql command line client configuration file
+  # #   copy: src=/vagrant/ansible/templates/my.cnf dest=/home/vagrant/.my.cnf owner=vagrant group=vagrant
+
+  # # PHP
+  # - name: add php5 ppa
+  #   apt_repository: repo='ppa:ondrej/php'
+
+  # - name: install PHP5 packages
+  #   apt: name={{ item }} state=latest
+  #   with_items:
+  #     - php5
+  #     - libapache2-mod-php5
+  #     - php5-cli
+  #     - php5-dev
+  #     - php5-mysql
+  #     - php-pear
+  #     - php5-mcrypt
+  #     - php5-gd
+  #     - php5-curl
+  #     - php5-xdebug
+  #     - php5-memcache
+  #     - php5-memcached
+  #     - php5-readline
+  #     - php5-sqlite
+
+  # - file: path=/etc/php5/conf.d state=directory
+
+  # - copy: src=/vagrant/deployment/templates/php-site.ini dest=/etc/php5/conf.d/php-site.ini
+  #   notify: restart apache
+
+  # - name: symlink common php configuration for cli handler
+  #   file: src=/etc/php5/conf.d/php-site.ini dest=/etc/php5/cli/conf.d/php-site.ini state=link
+  #   notify: restart apache
+
+  # - name: symlink common php configuration for apache2 handler
+  #   file: src=/etc/php5/conf.d/php-site.ini dest=/etc/php5/apache2/conf.d/php-site.ini state=link
+  #   notify: restart apache
+
+  # # phpmyadmin
+  # - name: install phpmyadmin
+  #   apt: name=phpmyadmin state=latest
+  
+  # # Assets compilation
+  # - name: add nodejs ppa
+  #   apt_repository: repo='ppa:chris-lea/node.js'
+
+  # - name: install nodejs
+  #   apt: name=nodejs state=latest
+
+  # - name: install rubygems
+  #   apt: name=rubygems state=present
+
+  # - name: install compass
+  #   command: gem install compass sass chunky_png fssm creates=/usr/local/bin/compass
+
+  # # Set up site
+  # #
+  # # - file: src=/vagrant dest=/var/www/site state=link
+  # # - file: path={{ item }} owner=vagrant group=vagrant mode=0777 state=directory
+  # #   with_items:
+  # #     - /var/cache/site
+  # #     - /var/cache/site/cache
+  # #     - /var/cache/site/clockwork
+  # #     - /var/cache/site/logs
+  # #     - /var/cache/site/meta
+  # #     - /var/cache/site/sessions
+  # #     - /var/cache/site/views
+  
+  # # - name: ensure once more that 000-default.conf is deleted
+  # #   file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  # #   notify: restart apache
+
+  # - name: ensure that phpmyadmin's stock config is deleted
+  #   file: path=/etc/apache2/conf.d/phpmyadmin.conf state=absent
+
+  # # - name: install npm packages
+  # #   command: chdir=/var/www/site npm install --no-bin-links
+  # #   register: out
+  # #   changed_when: "out.stdout.strip() != ''"
+  # #   sudo: false
+
+  # # - name: install composer packages
+  # #   command: chdir=/var/www/site bash pocket install
+  # #   register: out
+  # #   changed_when: "'Nothing to install or update' not in out.stdout"
+  # #   sudo: false
+
+  # # - name: set up artisan queue listen
+  # #   copy: src=/vagrant/ansible/templates/supervisor-queue-listen.conf dest=/etc/supervisor/conf.d/supervisor-queue-listen.conf
+  # #   notify: reload queue listener
+
+  # # Common stuff
+  # handlers:
+  #   - name: restart apache
+  #     action: service name=apache2 state=restarted
+  #   - name: restart mysql
+  #     action: service name=mysql state=restarted

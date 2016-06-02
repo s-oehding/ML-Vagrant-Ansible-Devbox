@@ -6,22 +6,8 @@ configs        = YAML.load_file("#{current_dir}/config/config.yaml")
 vagrant_config = configs['configs'][configs['configs']['use']]
 
 # exec setup script on first run
-if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{vagrant_config['vm_name']}*").empty?
+unless File.exists? ("#{current_dir}/config/config.yaml")
   `sh config/setup.sh #{vagrant_config['vm_name']} #{vagrant_config['vm_ip']} #{vagrant_config['vm_url']} #{vagrant_config['db_name']} #{vagrant_config['db_user']} #{vagrant_config['db_pass']}`
-end
-
-# Check to determine whether we're on a windows or linux/os-x host,
-# later on we use this to launch ansible in the supported way
-# source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
-def which(cmd)
-    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
-        exts.each { |ext|
-            exe = File.join(path, "#{cmd}#{ext}")
-            return exe if File.executable? exe
-        }
-    end
-    return nil
 end
 
 Vagrant.configure("2") do |config|
@@ -40,6 +26,7 @@ Vagrant.configure("2") do |config|
         end
         (ip = /inet addr:(\d+\.\d+\.\d+\.\d+)/.match(result)) && ip[1]
     end
+
     config.vm.define vagrant_config['vm_name'] do |node|
         node.vm.hostname = vagrant_config['vm_hostname']
         node.vm.network :public_network, ip:  vagrant_config['vm_ip']
@@ -50,7 +37,6 @@ Vagrant.configure("2") do |config|
         shopware = "shopware."+vagrant_config['vm_url']
         node.hostmanager.aliases = [url, adminer, dashboard, mail, shopware]
     end
-
 
     # VirtualBox Cpu settings
     # Use all CPU cores and 1/4 system memory
@@ -75,18 +61,16 @@ Vagrant.configure("2") do |config|
         v.customize ["modifyvm", :id, "--cpus", cpus]
     end
 
+    config.vm.synced_folder ".", "/vagrant", create: true
     config.vm.synced_folder "./www", "/var/www", create: true
 
-    # If ansible is in your path it will provision from your HOST machine
-    # If ansible is not found in the path it will be instaled in the VM and provisioned from there
-    if which('ansible-playbook')
-        config.vm.provision "ansible" do |ansible|
-            ansible.playbook = "./deployment/vagrant.yml"
-            ansible.sudo = true
-            ansible.limit = 'all'
-        end
-    else
-        config.vm.provision :shell, path: "./deployment/windows.sh", args: ["default"]
-    end
+
+    #"Stdin is not a TTY" - Fix
+    config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
+    config.vm.provision "shell" do |shell|
+        shell.path =  "./deployment/init.sh"
+        shell.args   = "'hello, world!'"
+      end
 
 end
