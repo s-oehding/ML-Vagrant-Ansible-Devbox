@@ -8,13 +8,17 @@ if [ $(dpkg-query -W -f='${Status}' ansible 2>/dev/null | grep -c "ok installed"
 then
     echo "Add APT repositories"
     export DEBIAN_FRONTEND=noninteractive
-    apt-get install -qq software-properties-common &> /dev/null || exit 1
-    apt-add-repository ppa:ansible/ansible &> /dev/null || exit 1
+    # apt-get install -qq -y software-properties-common &> /dev/null || exit 1
+    # apt-add-repository ppa:ansible/ansible &> /dev/null || exit 1
+
+    #debug
+    apt-get install -qq -y software-properties-common
+    apt-add-repository ppa:ansible/ansible
 
     apt-get update -qq
 
     echo "Installing Ansible"
-    apt-get install -y -qq ansible || exit 1
+    apt-get -qq -y -o Dpkg::Options::="--force-confold" install ansible &> /dev/null || exit 1
     echo "Ansible installed"
 fi
 

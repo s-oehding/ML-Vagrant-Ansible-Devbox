@@ -1,117 +1,125 @@
 ---
 - hosts: all
-  strategy: debug
+  # strategy: debug
   gather_facts: yes
   user: vagrant
-  sudo: true
+  become: true
   vars_files:
-    - ../config/config.yaml
+    - ../config/cfg.yml
   vars:
     http_port: 80
-    hostname: "{{ configs.inventory_hostname.vm_hostname }}"
-    domain: "{{ configs.inventory_hostname.vm_url }}"
+    hostname: "{{ vm_hostname }}"
+    domain: "{{ vm_url }}"
     subdomain: "shopware"
 
   tasks:
-    - debug: var=vars
-    - debug: var=hostvars[inventory_hostname]
+    # - debug: var=vars
+    # - debug: var=hostvars[inventory_hostname]
 
-  # - name: create site symlinks
-  #   file: src=/vagrant/www/html dest=/var/www/html state=link
-  #   file: src=/vagrant/www/shopware dest=/var/www/shopware state=link
-  #   notify: restart apache
+  - name: Ensures project folders are present on Guest
+    file: path=/var/www/{{ item }} state=directory
+    with_items:
+      - shopware
+      - html
 
-  # - name: install misc packages
-  #   apt: name={{ item }} state=latest
-  #   with_items:
-  #     - git-core
-  #     - curl
-  #     - unzip
-  #     - build-essential
-  #     - libsqlite3-dev
+  - name: install misc packages
+    apt: name={{ item }} state=latest
+    with_items:
+      - git-core
+      - curl
+      - unzip
+      - build-essential
+      - libsqlite3-dev
 
 
-  # - name: install language packs for locale support
-  #   apt: name={{ item }} state=latest
-  #   with_items:
-  #     - language-pack-de-base
-  #     - language-pack-es-base
+  - name: install language packs for locale support
+    apt: name={{ item }} state=latest
+    with_items:
+      - language-pack-de-base
 
   # # memcached
   # - name: ensure memcached is installed
   #   apt: name=memcached state=latest
 
-  # # Apache2  
-  # - name: ensure apache is installed
-  #   apt: name=apache2 state=present
+  # Apache2  
+  - name: ensure apache is installed
+    apt: name=apache2 state=present
 
-  # - name: make sure apache is running
-  #   action: service name=apache2 state=started enabled=true
+  - name: make sure apache is running
+    action: service name=apache2 state=started enabled=true
 
-  # - name: enabled mod_rewrite
-  #   apache2_module: name=rewrite state=present
-  #   notify:
-  #     - restart apache2
+  - name: enabled mod_rewrite
+    apache2_module: name=rewrite state=present
+    notify:
+      - restart apache2
 
-  # - name: enabled mod_headers
-  #   apache2_module: name=headers state=present
-  #   notify:
-  #     - restart apache2
+  - name: enabled mod_headers
+    apache2_module: name=headers state=present
+    notify:
+      - restart apache2
 
-  # - name: create default virtual host file
-  #   template: src=/vagrant/deployment/templates/vhosts/vhost.conf dest=/etc/apache2/sites-available/{{ domain }}.conf
+  - name: create default virtual host file
+    template: src=/vagrant/deployment/templates/vhosts/vhost.conf dest=/etc/apache2/sites-available/{{ domain }}.conf
 
-  # - name: create virtual host file
-  #   template: src=/vagrant/deployment/templates/vhosts/sub-vhost.conf dest=/etc/apache2/sites-available/{{ subdomain }}.conf
+  - name: create virtual host file
+    template: src=/vagrant/deployment/templates/vhosts/sub-vhost.conf dest=/etc/apache2/sites-available/{{ subdomain }}.conf
 
-  # - name: a2ensite {{ domain }}
-  #   command: a2ensite {{ domain }}
-  #   args:
-  #     creates: /etc/apache2/sites-enabled/{{ domain }}.conf
-  #   notify:
-  #     - restart apache2
+  - name: a2ensite {{ domain }}
+    command: a2ensite {{ domain }}
+    args:
+      creates: /etc/apache2/sites-enabled/{{ domain }}.conf
+    notify:
+      - restart apache2
 
-  # - name: a2ensite {{ subdomain }}
-  #   command: a2ensite {{ subdomain }}
-  #   args:
-  #     creates: /etc/apache2/sites-enabled/{{ subdomain }}.conf
-  #   notify:
-  #     - restart apache2
+  - name: a2ensite {{ subdomain }}
+    command: a2ensite {{ subdomain }}
+    args:
+      creates: /etc/apache2/sites-enabled/{{ subdomain }}.conf
+    notify:
+      - restart apache2
 
-  # - file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
-  #   notify: restart apache
+  - file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+    notify: restart apache
 
-  # - file: path=/etc/apache2/conf.d state=directory
+  - file: path=/etc/apache2/conf.d state=directory
 
-  # - copy: src=/vagrant/deployment/templates/fqdn.conf dest=/etc/apache2/conf.d/fqdn.conf
-  #   notify: restart apache
+  - copy: src=/vagrant/deployment/templates/fqdn.conf dest=/etc/apache2/conf.d/fqdn.conf
+    notify: restart apache
 
-  # - copy: src=/vagrant/deployment/templates/nosendfile.conf dest=/etc/apache2/conf.d/nosendfile.conf
-  #   notify: restart apache
+  - copy: src=/vagrant/deployment/templates/nosendfile.conf dest=/etc/apache2/conf.d/nosendfile.conf
+    notify: restart apache
 
-  # # MySQL
-  # - name: install MySQL
-  #   apt: name={{ item }} state=latest
-  #   with_items:
-  #     - mysql-server
-  #     - mysql-client
-  #     - python-mysqldb
+  # MySQL
+  - name: install MySQL
+    apt: name={{ item }} state=latest
+    with_items:
+      - mysql-server
+      - mysql-client
+      - python-mysqldb
 
-  # - name: add mysql user
-  #   mysql_user: name=vagrant
-  #               host={{ item }}
-  #               password=vagrant priv=*.*:ALL,GRANT
-  #               login_user=root
-  #               login_password=root
-  #   with_items:
-  #     - '%'
-  #     - localhost
+  - name: add mysql root user
+    mysql_user:
+        name=root
+        password=root
+        priv=*.*:ALL
+        state=present
+        check_implicit_admin=yes
 
-  # - name: create mysql databases
-  #   mysql_db: name={{ item }}
-  #             state=present
-  #   with_items:
-  #     - "{{ dbname }}"
+  - name: add mysql user
+    mysql_user: name={{ db_user}}
+                host={{ item }}
+                password={{ db_pass }} priv=*.*:ALL
+                login_user={{ db_user }}
+                login_password={{ db_pass }}
+    with_items:
+      - '%'
+      - localhost
+
+  - name: create mysql databases
+    mysql_db: name={{ item }}
+              state=present
+    with_items:
+      - "{{ db_name }}"
 
   # # - file: path=/etc/mysql/conf.d state=directory
   # # - name: Set MySQL number of connections
@@ -209,8 +217,8 @@
   # #   notify: reload queue listener
 
   # # Common stuff
-  # handlers:
-  #   - name: restart apache
-  #     action: service name=apache2 state=restarted
-  #   - name: restart mysql
-  #     action: service name=mysql state=restarted
+  handlers:
+    - name: restart apache
+      action: service name=apache2 state=restarted
+    - name: restart mysql
+      action: service name=mysql state=restarted
