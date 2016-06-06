@@ -1,0 +1,16 @@
+---
+- hosts: all
+  # strategy: debug
+  gather_facts: yes
+  user: vagrant
+  become: true
+  vars_files:
+    - config/config.yml
+    - vars/all.yml
+
+  roles:
+    - setup
+    - apache
+    - mysql
+    - php
+    - phpmyadmin

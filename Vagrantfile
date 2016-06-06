@@ -1,14 +1,17 @@
 require 'yaml'
 
-# Load Variables form Configuration
 current_dir    = File.dirname(File.expand_path(__FILE__))
-configs        = YAML.load_file("#{current_dir}/config/config.yaml")
-vagrant_config = configs['configs'][configs['configs']['use']]
 
 # exec setup script on first run
-unless File.exists? ("#{current_dir}/config/config.yaml")
-  `sh config/setup.sh #{vagrant_config['vm_name']} #{vagrant_config['vm_ip']} #{vagrant_config['vm_url']} #{vagrant_config['db_name']} #{vagrant_config['db_user']} #{vagrant_config['db_pass']}`
+# Check if Config file exists
+unless File.exists? ("#{current_dir}/deploy/config/config.yml")
+  `sh deploy/config/setup.sh devbox 192.168.0.10 local.dev devdb dbuser password`
 end
+
+# configs        = YAML.load_file("#{current_dir}/config/config.yaml")
+# vagrant_config = configs['configs'][configs['configs']['use']]
+configs        = YAML.load_file("#{current_dir}/deploy/config/config.yml")
+vagrant_config = configs
 
 Vagrant.configure("2") do |config|
 
@@ -31,11 +34,11 @@ Vagrant.configure("2") do |config|
         node.vm.hostname = vagrant_config['vm_hostname']
         node.vm.network :public_network, ip:  vagrant_config['vm_ip']
         url = vagrant_config['vm_url']
-        adminer = "adminer."+vagrant_config['vm_url']
+        database = "db."+vagrant_config['vm_url']
         dashboard = "dashboard."+vagrant_config['vm_url']
         mail = "mail."+vagrant_config['vm_url']
         shopware = "shopware."+vagrant_config['vm_url']
-        node.hostmanager.aliases = [url, adminer, dashboard, mail, shopware]
+        node.hostmanager.aliases = [url, database, dashboard, mail, shopware]
     end
 
     # VirtualBox Cpu settings
@@ -61,15 +64,16 @@ Vagrant.configure("2") do |config|
         v.customize ["modifyvm", :id, "--cpus", cpus]
     end
 
-    config.vm.synced_folder ".", "/vagrant", create: true
-    config.vm.synced_folder "./www", "/var/www", create: true
-
+    config.vm.synced_folder "./www", "/var/www", create: true,
+    owner: "vagrant",
+    group: "www-data",
+    mount_options: ["dmode=775,fmode=664"]
 
     #"Stdin is not a TTY" - Fix
     config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
     config.vm.provision "shell" do |shell|
-        shell.path =  "./deployment/init.sh"
+        shell.path =  "./deploy/init.sh"
         shell.args   = "'hello, world!'"
       end
 

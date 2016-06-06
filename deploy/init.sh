@@ -22,5 +22,5 @@ then
     echo "Ansible installed"
 fi
 
-cd /vagrant/deployment
+cd /vagrant/deploy
 ansible-playbook vagrant.yml --connection=local

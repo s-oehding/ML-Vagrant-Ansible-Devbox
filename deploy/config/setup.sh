@@ -71,17 +71,14 @@ clear >&2
 # --------------------
 VCONFIG=$(cat <<EOF
 ---
-configs:
-  use: '$vm_hostname'
-  $vm_hostname:
-    vm_ip: '$vm_ip'
-    vm_hostname: '$vm_hostname'
-    vm_url: '$vm_url'
-    vm_name: '$vm_hostname'
-    db_name: '$db_name'
-    db_user: '$db_user'
-    db_pass: '$db_pass'
+vm_ip: '$vm_ip'
+vm_hostname: '$vm_hostname'
+vm_url: '$vm_url'
+vm_name: '$vm_hostname'
+db_name: '$db_name'
+db_user: '$db_user'
+db_pass: '$db_pass'
 EOF
 )
 
-echo "$VCONFIG" > config/config.yaml
+echo "$VCONFIG" > deploy/config/config.yml

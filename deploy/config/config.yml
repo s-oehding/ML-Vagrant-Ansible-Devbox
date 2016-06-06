@@ -1,8 +1,8 @@
 ---
-vm_ip: '192.168.178.99'
+vm_ip: '192.168.0.10'
 vm_hostname: 'devbox'
 vm_url: 'local.dev'
 vm_name: 'devbox'
-db_name: 'dbname'
+db_name: 'devdb'
 db_user: 'dbuser'
 db_pass: 'password'
