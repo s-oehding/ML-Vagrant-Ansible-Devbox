@@ -2,9 +2,6 @@
   - name: Apache2 | ensure apache is installed
     apt: name=apache2 state=present
 
-  - name: Apache2 | ensure libapache2-mod-php5 is installed
-    apt: name=libapache2-mod-php5 state=present
-
   - name: Apache2 | make sure apache is running
     action: service name=apache2 state=started enabled=true
 

@@ -7,10 +7,13 @@ mysql:
   mysql_root_password: "root"
 php:
     install: '1'
-    ppa: php5-5.6
-    packages: [php5-cli, php5-intl, mcrypt, php-pear, php5-curl, php5-cgi, php5-common, php5-fpm, php5-gd, php5-memcache, php5-memcached, php5-mysql, php5-sqlite, php5-xdebug]
+    # ppa: php5-5.6
+    # packages: [php5-cli, php5-intl, mcrypt, php-pear, php5-curl, php5-cgi, php5-common, php5-fpm, php5-gd, php5-memcache, php5-memcached, php5-mysql, php5-sqlite, php5-xdebug]
+    ppa: php
+    packages: [php7.0-cli, php7.0-zip, php7.0-intl, mcrypt, libapache2-mod-php7.0, php7.0-curl, php7.0-cgi, php7.0-common, php7.0-gd, php7.0-memcache, php7.0-memcached, php7.0-mysql, php7.0-mbstring, php7.0-xdebug]
     memory_limit: '512M'
     upload_max_filesize: '512M'
+    max_execution_time: '120'
 pma:
   phpmyadmin_mysql_host: localhost
   phpmyadmin_mysql_port: ""
