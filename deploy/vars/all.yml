@@ -3,8 +3,13 @@ setup:
   http_port: 80
   hostname: "{{ vm_hostname }}"
   domain: "{{ vm_url }}"
+logio:
+  
+  subdomain: 'log'
 mysql:
   mysql_root_password: "root"
+nodejs:
+  nodejs_version: "6.0.0"
 php:
     install: '1'
     # ppa: php5-5.6

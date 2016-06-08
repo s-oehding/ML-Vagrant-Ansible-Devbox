@@ -1,0 +1,39 @@
+---
+- name: LogIO | install NPM Packages
+  command: 'npm install -g log.io --user vagrant'
+  args:
+    creates: /usr/bin/log.io-server
+
+- name: LogIO | config > Log server template
+  template:
+    src:  "{{ elao_logio_config_log_server_template|ternary(elao_logio_config_log_server_template, 'config/log_server/base.j2') }}"
+    dest: "{{ elao_logio_config_log_server_file }}"
+  when: (elao_logio_config_log_server_template is not none) or (elao_logio_config_log_server|length)
+  notify:
+    - log.io-server restart
+
+- name: LogIO | config > Web server template
+  template:
+    src:  "{{ elao_logio_config_web_server_template|ternary(elao_logio_config_web_server_template, 'config/web_server/base.j2') }}"
+    dest: "{{ elao_logio_config_web_server_file }}"
+  when: (elao_logio_config_web_server_template is not none) or (elao_logio_config_web_server|length)
+  notify:
+    - log.io-server restart
+
+- name: LogIO | config > Harvester template
+  template:
+    src:  "{{ elao_logio_config_harvester_template|ternary(elao_logio_config_harvester_template, 'config/harvester/base.j2') }}"
+    dest: "{{ elao_logio_config_harvester_file }}"
+  when: (elao_logio_config_harvester_template is not none) or (elao_logio_config_harvester|length)
+  notify:
+    - log.io-harvester restart
+
+- name: Apache2 | create subdomain virtual host file
+  template: src=vhost.conf dest=/etc/apache2/sites-available/{{ logio.subdomain }}.conf
+
+- name: Apache2 | a2ensite {{ logio.subdomain }}.{{ setup.domain }}
+  command: a2ensite {{ logio.subdomain }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{ logio.subdomain }}.conf
+  notify:
+    - restart apache2

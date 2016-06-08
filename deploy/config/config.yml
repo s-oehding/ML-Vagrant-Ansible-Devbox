@@ -1,8 +1,0 @@
----
-vm_ip: '192.168.178.220'
-vm_hostname: 'sw52-dev'
-vm_url: 'sw52.dev'
-vm_name: 'sw52-dev'
-db_name: 'shopware52'
-db_user: 'dbuser'
-db_pass: 'passwort'

@@ -8,8 +8,7 @@ unless File.exists? ("#{current_dir}/deploy/config/config.yml")
   `sh deploy/config/setup.sh devbox 192.168.0.10 local.dev devdb dbuser password`
 end
 
-# configs        = YAML.load_file("#{current_dir}/config/config.yaml")
-# vagrant_config = configs['configs'][configs['configs']['use']]
+# load configuration variables
 configs        = YAML.load_file("#{current_dir}/deploy/config/config.yml")
 vagrant_config = configs
 
