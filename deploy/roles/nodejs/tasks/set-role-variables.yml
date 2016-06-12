@@ -6,4 +6,4 @@
 - name: set nodejs_version, if neither version variables are defined
   set_fact:
     nodejs_version: "{{ nodejs_default_in_apt }}"
-  when: nodejs_version is not defined and iojs_version is not defined and ansible_pkg_mgr == "apt"
+  when: nodejs.nodejs_version is not defined and iojs_version is not defined and ansible_pkg_mgr == "apt"

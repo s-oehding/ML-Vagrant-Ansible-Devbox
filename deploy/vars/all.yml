@@ -4,12 +4,14 @@ setup:
   hostname: "{{ vm_hostname }}"
   domain: "{{ vm_url }}"
 logio:
-  
+  logio_backend_port: '28777'
+  logio_frontend_port: '28778'
+  logio_user: 'vagrant'
   subdomain: 'log'
 mysql:
   mysql_root_password: "root"
 nodejs:
-  nodejs_version: "6.0.0"
+  nodejs_version: '6.x'
 php:
     install: '1'
     # ppa: php5-5.6

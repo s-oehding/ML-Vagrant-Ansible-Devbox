@@ -1,3 +1,4 @@
 .vagrant/
+deploy/config/config.yml
 www/shopware/*
 vagrant_ansible_inventory_devbox

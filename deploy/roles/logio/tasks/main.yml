@@ -1,35 +1,34 @@
 ---
 - name: LogIO | install NPM Packages
-  command: 'npm install -g log.io --user vagrant'
+  become_user: vagrant
+  become: yes
+  command: 'sudo npm install -g log.io --user "{{ logio.logio_user }}"'
   args:
     creates: /usr/bin/log.io-server
 
 - name: LogIO | config > Log server template
   template:
-    src:  "{{ elao_logio_config_log_server_template|ternary(elao_logio_config_log_server_template, 'config/log_server/base.j2') }}"
-    dest: "{{ elao_logio_config_log_server_file }}"
-  when: (elao_logio_config_log_server_template is not none) or (elao_logio_config_log_server|length)
+    src:  "config/log_server/log_server.conf"
+    dest: "/home/vagrant/.log.io/log_server.conf"
   notify:
     - log.io-server restart
 
 - name: LogIO | config > Web server template
   template:
-    src:  "{{ elao_logio_config_web_server_template|ternary(elao_logio_config_web_server_template, 'config/web_server/base.j2') }}"
-    dest: "{{ elao_logio_config_web_server_file }}"
-  when: (elao_logio_config_web_server_template is not none) or (elao_logio_config_web_server|length)
+    src:  "config/web_server/web_server.conf"
+    dest: "/home/vagrant/.log.io/web_server.conf"
   notify:
     - log.io-server restart
 
 - name: LogIO | config > Harvester template
   template:
-    src:  "{{ elao_logio_config_harvester_template|ternary(elao_logio_config_harvester_template, 'config/harvester/base.j2') }}"
-    dest: "{{ elao_logio_config_harvester_file }}"
-  when: (elao_logio_config_harvester_template is not none) or (elao_logio_config_harvester|length)
+    src:  "config/harvester/harvester.conf"
+    dest: "/home/vagrant/.log.io/harvester.conf"
   notify:
     - log.io-harvester restart
 
 - name: Apache2 | create subdomain virtual host file
-  template: src=vhost.conf dest=/etc/apache2/sites-available/{{ logio.subdomain }}.conf
+  template: src=config/apache/vhost.conf dest=/etc/apache2/sites-available/{{ logio.subdomain }}.conf
 
 - name: Apache2 | a2ensite {{ logio.subdomain }}.{{ setup.domain }}
   command: a2ensite {{ logio.subdomain }}
@@ -37,3 +36,20 @@
     creates: /etc/apache2/sites-enabled/{{ logio.subdomain }}.conf
   notify:
     - restart apache2
+
+- name: services > Server init
+  template:
+    src:   services/log.io-server.j2
+    dest:  /etc/init/log.io-server.conf
+    owner: root
+    mode:  0755
+
+- name: services > Harvester init
+  template:
+    src:   services/log.io-harvester.j2
+    dest:  /etc/init/log.io-harvester.conf
+    owner: root
+    mode:  0755
+
+- name: LogIO | reload services
+  command: 'sudo initctl reload-configuration'

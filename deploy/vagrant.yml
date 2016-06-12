@@ -2,8 +2,6 @@
 - hosts: all
   # strategy: debug
   gather_facts: yes
-  user: vagrant
-  become: true
   vars_files:
     - config/config.yml
     - vars/all.yml
@@ -14,3 +12,5 @@
     - mysql
     - php
     - phpmyadmin
+    - nodejs
+    - logio

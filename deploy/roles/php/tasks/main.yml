@@ -17,4 +17,10 @@
   with_items: "{{php.packages}}"
   when: php.packages is defined
 
+- name: Create Log directories
+  file: path=/var/log/php state=directory mode=0755
+
+- name: Initialize empty php error.log
+  file: path=/var/log/php/error.log state=touch mode=0755
+
 - include: configure.yml

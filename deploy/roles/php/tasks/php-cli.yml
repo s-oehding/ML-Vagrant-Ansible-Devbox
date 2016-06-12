@@ -23,3 +23,13 @@
   lineinfile: dest=/etc/php/7.0/cli/php.ini
               regexp=';?opcache.enable_cli=\d'
               line='opcache.enable_cli=1'
+
+- name: set error_reporting cli
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp=';?error_reporting=\d'
+              line='error_reporting = E_ALL | E_STRICT'
+
+- name: set error_log location cli
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp=';?error_reporting=\d'
+              line='error_log = /var/log/php/error.log'

@@ -1,23 +1,26 @@
 ---
 #VM Setup
-  - name: Setup | Ensures project folders are present on Guest
-    file: path=/var/www/{{ item }} state=directory
-    with_items:
-      - shopware
-      - html
+- name: Setup | Add user Vagrant to ADM Group
+  user: name=vagrant groups=adm append=yes
 
-  - name: Setup | Install misc packages
-    apt: name={{ item }} state=latest
-    with_items:
-      - git-core
-      - curl
-      - unzip
-      - build-essential
-      - libsqlite3-dev
-      - htop
-      - figlet
+- name: Setup | Ensures project folders are present on Guest
+  file: path=/var/www/{{ item }} state=directory
+  with_items:
+    - shopware
+    - html
 
-  - name: Setup | Install language packs locale support
-    apt: name={{ item }} state=latest
-    with_items:
-      - language-pack-de-base
+- name: Setup | Install misc packages
+  apt: name={{ item }} state=latest
+  with_items:
+    - git-core
+    - curl
+    - unzip
+    - build-essential
+    - libsqlite3-dev
+    - htop
+    - figlet
+
+- name: Setup | Install language packs locale support
+  apt: name={{ item }} state=latest
+  with_items:
+    - language-pack-de-base
