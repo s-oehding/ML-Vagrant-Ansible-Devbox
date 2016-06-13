@@ -5,8 +5,18 @@
 - stat: path=/etc/php/7.0/cli/php.ini
   register: phpcli
 
-- include: php-cli.yml
-  when: phpcli.stat.exists
+- stat: path=/etc/php/7.0/cgi/php.ini
+  register: phpcgi
 
-- include: mod-php.yml
-  when: modphp.stat.exists
+- name: Place PHP configuration file in place.
+  template:
+    src: php.ini.j2
+    dest: "{{ item }}/php.ini"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: 
+    - /etc/php/7.0/apache2
+    - /etc/php/7.0/cgi
+    - /etc/php/7.0/cli
+  notify: restart apache
