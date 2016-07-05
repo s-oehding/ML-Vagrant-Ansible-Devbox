@@ -62,6 +62,10 @@ Vagrant.configure("2") do |config|
         v.customize ["modifyvm", :id, "--memory", mem]
         v.customize ["modifyvm", :id, "--cpus", cpus]
     end
+    
+    #Portforwarding to use NPM Browsersync from Inside VM
+    config.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
+    config.vm.network :forwarded_port, guest: 3001, host: 3001, auto_correct: true
 
     config.vm.synced_folder "./www", "/var/www", create: true,
     owner: "vagrant",
