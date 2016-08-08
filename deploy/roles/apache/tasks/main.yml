@@ -34,7 +34,7 @@
     args:
       creates: /etc/apache2/sites-enabled/{{ setup.domain }}.conf
     notify:
-      - restart apache2
+      - restart apache
 
   - name: Apache2 | a2ensite subdomains
     command: a2ensite {{ item }}

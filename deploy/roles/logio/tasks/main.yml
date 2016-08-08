@@ -35,7 +35,7 @@
   args:
     creates: /etc/apache2/sites-enabled/{{ logio.subdomain }}.conf
   notify:
-    - restart apache2
+    - restart apache
 
 - name: services > Server init
   template:

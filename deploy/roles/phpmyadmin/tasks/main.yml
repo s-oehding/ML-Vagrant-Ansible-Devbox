@@ -28,7 +28,7 @@
   args:
     creates: /etc/apache2/sites-enabled/db.conf
   notify:
-    - restart apache2
+    - restart apache
 
 - name: Apache2 | disable php5
   apache2_module: name=php5 state=absent
