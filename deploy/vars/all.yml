@@ -14,10 +14,8 @@ nodejs:
   nodejs_version: '6.x'
 php:
   install: '1'
-  # ppa: php5-5.6
-  # packages: [php5-cli, php5-intl, mcrypt, php-pear, php5-curl, php5-cgi, php5-common, php5-fpm, php5-gd, php5-memcache, php5-memcached, php5-mysql, php5-sqlite, php5-xdebug]
   ppa: php
-  packages: [php7.0-cli, php7.0-zip, php7.0-intl, mcrypt, libapache2-mod-php7.0, php7.0-curl, php7.0-cgi, php7.0-common, php7.0-gd, php7.0-memcache, php7.0-memcached, php7.0-mysql, php7.0-mbstring, php7.0-xdebug]
+  packages: [php7.0-cli, php7.0-zip, php7.0-intl, php7.0-mcrypt, php7.0-curl, php7.0-cgi, php7.0-common, php7.0-gd, php7.0-memcache, php7.0-memcached, php7.0-mysql, php7.0-mbstring, php7.0-xdebug, php5.6-cli, php5.6-intl, php5.6-mcrypt, php-pear, php5.6-curl, php5.6-cgi, php5.6-common, php5.6-mbstring, php5.6-gd, php5.6-memcache, php5.6-memcached, php5.6-mysql, php5.6-xdebug]
   php_memory_limit: '512M'
   php_max_execution_time: '120'
   php_max_input_time: '120'

@@ -1,4 +1,8 @@
 ---
+- name: Cleanup - Remove old PHP Versions
+  sudo: yes
+  apt: pkg=php5-common state=absent purge=yes autoremove=yes
+
 - name: Add ppa Repository
   sudo: yes
   apt_repository: repo=ppa:ondrej/{{ php.ppa }}
@@ -6,6 +10,18 @@
 - name: Update apt
   sudo: yes
   apt: update_cache=yes
+
+- name: Install php5.6-FPM
+  sudo: yes
+  apt: pkg=php5.6-fpm state=latest
+
+- name: Install php5.6
+  sudo: yes
+  apt: pkg=php5.6 state=latest
+
+- name: Install php7-FPM
+  sudo: yes
+  apt: pkg=php7.0-fpm state=latest
 
 - name: Install php7
   sudo: yes
@@ -16,11 +32,5 @@
   apt: pkg={{ item }} state=latest
   with_items: "{{php.packages}}"
   when: php.packages is defined
-
-- name: Create Log directories
-  file: path=/var/log/php state=directory owner=root group=adm mode=0777
-
-- name: Initialize empty php error.log
-  file: path=/var/log/php/error.log state=touch owner=root group=adm mode=0777
 
 - include: configure.yml

@@ -2,8 +2,18 @@
   - name: Apache2 | ensure apache is installed
     apt: name=apache2 state=present
 
-  - name: Apache2 | make sure apache is running
-    action: service name=apache2 state=started enabled=true
+  - name: Apache2 | install mod-fast-cgi
+    apt: name=libapache2-mod-fastcgi state=present
+
+  - name: Apache2 | enabled mod_actions
+    apache2_module: name=actions state=present
+    notify:
+      - restart apache
+
+  - name: Apache2 | enabled mod_fcgi
+    apache2_module: name=fastcgi state=present
+    notify:
+      - restart apache
 
   - name: Apache2 | enabled mod_rewrite
     apache2_module: name=rewrite state=present
@@ -59,3 +69,6 @@
     copy: src=nosendfile.conf dest=/etc/apache2/conf.d/nosendfile.conf
     notify: 
       - restart apache
+
+  - name: Apache2 | make sure apache is running
+    action: service name=apache2 state=started enabled=true

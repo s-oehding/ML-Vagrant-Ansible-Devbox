@@ -15,7 +15,9 @@ vagrant_config = configs
 Vagrant.configure("2") do |config|
 
     config.vm.box = "ubuntu/trusty64"
-    config.vm.box_url = "https://vagrantcloud.com/ubuntu/trusty64"
+    # config.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/xenial64"
+
+    # config.vm.provision 'shell', inline: "if ! grep -q $(cat /etc/hostname) /etc/hosts; then echo >> /etc/hosts echo 127.0.0.1 $(cat /etc/hostname) >> /etc/hosts fi"
 
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
