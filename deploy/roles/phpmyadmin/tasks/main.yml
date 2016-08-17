@@ -11,15 +11,6 @@
 - name: PHPmyAdmin | Install pma
   apt: pkg=phpmyadmin state=present
 
-- name: PHPmyAdmin | Ensure PHPMyAdmin config file is included in Apache config.
-  lineinfile:
-    dest: /etc/apache2/apache2.conf
-    state: present
-    regexp: "^Include.+phpmyadmin.+$"
-    line: "Include /etc/phpmyadmin/apache.conf"
-    insertafter: "EOF"
-  notify: restart apache
-
 - name: PHPmyAdmin | create subdomain virtual host file
   template: src=vhost.conf dest=/etc/apache2/sites-available/db.conf
 
