@@ -6,7 +6,6 @@
 - name: Setup | Ensures project folders are present on Guest
   file: path=/var/www/{{ item }} state=directory
   with_items:
-    - shopware
     - html
 
 - name: Setup | Install misc packages

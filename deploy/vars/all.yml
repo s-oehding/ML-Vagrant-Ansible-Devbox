@@ -3,6 +3,13 @@ setup:
   http_port: 80
   hostname: '{{ vm_hostname }}'
   domain: '{{ vm_url }}'
+server:
+  timezone: Europe/Berlin
+  locale: de_DE.UTF-8
+apache:
+  vhosts:
+    php56: [php56, shopware56]
+    php70: [php70, shopware70]
 logio:
   logio_backend_port: '28777'
   logio_frontend_port: '28778'
@@ -39,13 +46,3 @@ php:
   php_session_gc_maxlifetime: 1440
   php_session_save_handler: files
   php_session_save_path: ''
-pma:
-  phpmyadmin_mysql_host: localhost
-  phpmyadmin_mysql_port: ''
-  phpmyadmin_mysql_socket: ''
-  phpmyadmin_mysql_connect_type: tcp
-  phpmyadmin_mysql_user: root
-  phpmyadmin_mysql_password: '{{ mysql_root_password }}'
-server:
-  timezone: Europe/Berlin
-  locale: de_DE.UTF-8
