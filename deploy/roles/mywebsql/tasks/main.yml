@@ -1,8 +1,11 @@
 ---
 - name: MyWebSql | download MyWebSql
-  get_url: url=https://sourceforge.net/projects/mywebsql/files/stable/mywebsql-3.6.zip/download dest=/var/www/db mode=0755
+  get_url: url=https://sourceforge.net/projects/mywebsql/files/stable/mywebsql-3.6.zip/download dest=/var/www mode=0755
 
-- unarchive: src=/var/www/db/mywebsql-3.6.zip dest=/var/www/db
+- unarchive: src=/var/www/mywebsql-3.6.zip dest=/var/www
+
+- name: MyWebSql | Cleanup
+  file: path=/var/www/mywebsql-3.6.zip state=absent
 
 - name: MyWebSql | create subdomain virtual host file
   template: src=vhost.conf dest=/etc/apache2/sites-available/db.conf
