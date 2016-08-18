@@ -52,6 +52,9 @@
   - name: Apache2 | copy index file (Workaround)
     copy: src=templates/index.php.j2 dest=/tmp/index.php.j2
 
+  - name: Apache2 | add index default
+    command: cp /tmp/index.php.j2 /var/www/html/index.php
+
   - name: Apache2 | add index files for Vhosts
     command: cp /tmp/index.php.j2 /var/www/{{ item }}/index.php
     with_items: "{{ apache.vhosts.php56 }}"
@@ -59,7 +62,6 @@
   - name: Apache2 | add index files for Vhosts
     command: cp /tmp/index.php.j2 /var/www/{{ item }}/index.php
     with_items: "{{ apache.vhosts.php70 }}"
-
 
   - name: Apache2 | create default virtual host file
     template: src=vhost.conf dest=/etc/apache2/sites-available/{{ setup.domain }}.conf
