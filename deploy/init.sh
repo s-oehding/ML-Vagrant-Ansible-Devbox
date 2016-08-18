@@ -22,5 +22,13 @@ then
     echo "Ansible installed"
 fi
 
+mkdir -p /home/vagrant/ansible/tmp
+
+cat > /home/vagrant/.ansible.cfg <<EOF
+[defaults]
+remote_tmp = /home/vagrant/ansible/tmp
+log_path = /home/vagrant/ansible/ansible.log
+EOF
+
 cd /vagrant/deploy
 ansible-playbook vagrant.yml --connection=local
