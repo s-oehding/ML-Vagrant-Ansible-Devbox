@@ -9,6 +9,4 @@
   roles:
     - setup
     - apache
-    - mysql
     - php
-    - mywebsql

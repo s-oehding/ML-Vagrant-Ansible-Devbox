@@ -1,0 +1,10 @@
+<IfModule mod_fastcgi.c>
+  AddHandler php70-fcgi-{{ item }} .php
+  Action php70-fcgi-{{ item }} /php70-fcgi-{{ item }}
+  Alias /php70-fcgi-{{ item }} /usr/lib/cgi-bin/php70-fcgi-{{ item }}
+  FastCgiExternalServer /usr/lib/cgi-bin/php70-fcgi-{{ item }} -socket /run/php/php7.0-fpm.sock -pass-header Authorization
+
+  <Directory "/usr/lib/cgi-bin">
+     Require all granted
+  </Directory>
+</IfModule>

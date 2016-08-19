@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 mkdir -p /etc/ansible
 printf '[vagrant]\nlocalhost\n' | sudo tee /etc/ansible/hosts > /dev/null
 
