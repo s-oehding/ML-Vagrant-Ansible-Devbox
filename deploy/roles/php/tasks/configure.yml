@@ -40,3 +40,23 @@
     - /etc/php/5.6/cgi
     - /etc/php/5.6/cli
   notify: restart apache
+
+- name: Place PHP-FPM 5.6 pool configurations
+  template:
+    src: php56-fpm.conf.j2
+    dest: "/etc/php/5.6/fpm/pool.d/{{ item }}.conf"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ apache.vhosts.php56 }}"
+  notify: restart apache
+
+- name: Place PHP-FPM 7.0 pool configurations
+  template:
+    src: php70-fpm.conf.j2
+    dest: "/etc/php/7.0/fpm/pool.d/{{ item }}.conf"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ apache.vhosts.php70 }}"
+  notify: restart apache

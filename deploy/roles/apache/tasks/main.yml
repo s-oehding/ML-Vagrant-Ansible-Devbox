@@ -30,11 +30,28 @@
     notify:
       - restart apache
 
-  - name: Apache2 | create php-fpm configuration
-    template: src=php-fpm.conf dest=/etc/apache2/conf-available/php-fpm.conf
+  - name: Apache2 | enabled mod_proxy_fcgi
+    apache2_module: name=proxy_fcgi state=present
+    notify:
+      - restart apache
 
-  - name: Apache2 | a2enconf php-fpm
-    command: a2enconf php-fpm
+  - name: Apache2 | create php56-fpm configuration
+    template: src=php56-fpm.conf.j2 dest=/etc/apache2/conf-available/php-fpm-{{ item }}.conf
+    with_items: "{{ apache.vhosts.php56 }}"
+
+  - name: Apache2 | create php70-fpm configuration
+    template: src=php70-fpm.conf.j2 dest=/etc/apache2/conf-available/php-fpm-{{ item }}.conf
+    with_items: "{{ apache.vhosts.php70 }}"
+
+  - name: Apache2 | a2enconf php56-fpm
+    command: a2enconf php-fpm-{{ item }}
+    with_items: "{{ apache.vhosts.php56 }}"
+    notify:
+      - restart apache
+
+  - name: Apache2 | a2enconf php70-fpm
+    command: a2enconf php-fpm-{{ item }}
+    with_items: "{{ apache.vhosts.php70 }}"
     notify:
       - restart apache
 

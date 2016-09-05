@@ -11,14 +11,6 @@
   sudo: yes
   apt: update_cache=yes
 
-- name: Install php5.6-FPM
-  sudo: yes
-  apt: pkg=php5.6-fpm state=latest
-
-- name: Install php5.6
-  sudo: yes
-  apt: pkg=php5.6 state=latest
-
 - name: Install php7-FPM
   sudo: yes
   apt: pkg=php7.0-fpm state=latest
@@ -26,6 +18,14 @@
 - name: Install php7
   sudo: yes
   apt: pkg=php7.0 state=latest
+
+- name: Install php5.6-FPM
+  sudo: yes
+  apt: pkg=php5.6-fpm state=latest
+
+- name: Install php5.6
+  sudo: yes
+  apt: pkg=php5.6 state=latest
 
 - name: Install PHP Packages
   sudo: yes
