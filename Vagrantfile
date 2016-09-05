@@ -38,8 +38,11 @@ Vagrant.configure("2") do |config|
         database = "db."+vagrant_config['vm_url']
         dashboard = "dashboard."+vagrant_config['vm_url']
         mail = "mail."+vagrant_config['vm_url']
-        shopware = "shopware."+vagrant_config['vm_url']
-        node.hostmanager.aliases = [url, database, dashboard, mail, shopware]
+        shopware56 = "shopware56."+vagrant_config['vm_url']
+        shopware70 = "shopware70."+vagrant_config['vm_url']
+        php56 = "php56."+vagrant_config['vm_url']
+        php70 = "php70."+vagrant_config['vm_url']
+        node.hostmanager.aliases = [url, database, dashboard, mail, shopware56, shopware70, php56, php70]
     end
 
     # VirtualBox Cpu settings
